@@ -1,0 +1,25 @@
+{
+	"name" : "gossi/propel-l10n-behavior",
+	"type" : "propel-behavior",
+	"license" : "MIT",
+	"keywords" : [
+		"propel",
+		"behavior",
+		"l10n"
+	],
+	"autoload" : {
+		"psr-0" : {
+			"gossi\\propel\\behavior\\l10n" : "src"
+		}
+	},
+	"require" : {
+		"php" : ">=5.4",
+		"propel/propel" : "dev-master@dev"
+	},
+	"extra": {
+	    "propel": {
+	        "name": "l10n",
+	        "class": "\\gossi\\propel\\behavior\\l10n\\L10nBehavior"
+	    }
+	}
+}
