@@ -17,7 +17,6 @@
 		"propel/propel" : "dev-master@dev"
 	},
 	"extra" : {
-		"name" : "l10n",
-		"class" : "\\gossi\\propel\\behavior\\l10n\\L10nBehavior"
+		"name" : "l10n"
 	}
 }
