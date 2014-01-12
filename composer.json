@@ -16,10 +16,8 @@
 		"php" : ">=5.4",
 		"propel/propel" : "dev-master@dev"
 	},
-	"extra": {
-	    "propel": {
-	        "name": "l10n",
-	        "class": "\\gossi\\propel\\behavior\\l10n\\L10nBehavior"
-	    }
+	"extra" : {
+		"name" : "l10n",
+		"class" : "\\gossi\\propel\\behavior\\l10n\\L10nBehavior"
 	}
 }
