@@ -5,6 +5,17 @@ This behavior let's you globally define your locales with its dependencies and r
 
 ## Installation
 
+TODO!
+
+Install via composer:
+
+```json
+{
+    "require": {
+        "gossi/propel-l10n-behavior": "dev-master"
+    }
+}
+```
 
 ## Locale and Dependencies
 
@@ -25,6 +36,19 @@ Default locale is set to `en` but of course you can change this:
 PropelL10n::setLocale('de-DE');
 
 echo PropelL10n::getLocale(); // de-DE
+```
+
+The default locale can be overwritten per object, e.g. you have a `Book` model, this is how it works:
+
+```php
+$book = new Book();
+$book->setLocale('ja-JP');
+```
+
+Now, the locale for book is japanese, while for all others it stays german (as seen in the example above). You can reset this object-related overwrite by setting the locale to `null`:
+
+```php
+$book->setLocale(null);
 ```
 
 ### Set Fallback locale
@@ -66,6 +90,27 @@ PropelL10n::countDependencies('de-CH'); // 2
 
 ## Usage
 
+### In your schema.xml
+
+The usage in your schema.xml is very similar to the [i18n](http://propelorm.org/documentation/behaviors/i18n.html) behavior.
+
+```xml
+<table name="book">
+	<column name="id" type="INTEGER" primaryKey="true" required="true"
+		autoIncrement="true" />
+	<column name="title" type="VARCHAR" size="255" />
+	<column name="author" type="VARCHAR" size="255" />
+
+	<behavior name="l10n">
+		<parameter name="i18n_columns" value="title" />
+	</behavior>
+</table>
+```
+
+The parameters are equal to the [i18n parameters](http://propelorm.org/documentation/behaviors/i18n.html#parameters), except `default_locale` doesn't exist.
+
+### Using the API
+
 There is three things you need to do once for your app and you are ready to go and use propel as if they weren't any l10n/i18n behaviors used at all.
 
 1. Set the default locale
@@ -77,7 +122,7 @@ Example:
 ```php
 PropelL10n::setLocale('de-CH'); // this is mostly the language a user decided to use
 PropelL10n::setFallback('en'); // that's the default language of your app
-PropelL10n::setDepdencies([ // that's the locales you have available
+PropelL10n::setDependencies([ // that's the locales you have available
 	'de-CH' => 'de-DE',
 	'de-AT' => 'de-DE',
 	'de-DE' => 'en-US',
@@ -87,6 +132,23 @@ PropelL10n::setDepdencies([ // that's the locales you have available
 ```
 
 And you are ready to go.
+
+#### Retrieving from Objects
+
+```php
+$book = new Book();
+$book->setTitle('Lord of the Rings');
+$book->setLocale('de');
+$book->setTitle('Herr der Ringe');
+$book->setLocale(null);
+
+echo $book->getTitle(); // Lord of the Rings - using the default locale (`en`)
+echo $book->getTitle('de-DE'); // Herr der Ringe
+$book->setLocale('de-DE');
+echo $book->getTitle(); // Herr der Ringe
+echo $book->getTitle('ja-JP'); // Lord of the Rings - using fallback locale (`en`)
+```
+
 
 ## Performance
 

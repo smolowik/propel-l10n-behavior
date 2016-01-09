@@ -2,6 +2,7 @@
 namespace gossi\propel\behavior\l10n;
 
 use Propel\Generator\Behavior\I18n\I18nBehaviorObjectBuilderModifier;
+use Propel\Generator\Model\Column;
 
 class L10nBehaviorObjectBuilderModifier extends I18nBehaviorObjectBuilderModifier {
 	
@@ -67,7 +68,6 @@ class L10nBehaviorObjectBuilderModifier extends I18nBehaviorObjectBuilderModifie
 		$this->behavior->backupTemplatesDirname();
 		$template = $this->behavior->renderTemplate('objectGetTranslation', [
 			'i18nTablePhpName' => $this->builder->getClassNameFromBuilder($this->builder->getNewStubObjectBuilder($i18nTable)),
-			'defaultLocale'    => $this->behavior->getDefaultLocale(),
 			'i18nListVariable' => $this->builder->getRefFKCollVarName($fk),
 			'localeColumnName' => $this->behavior->getLocaleColumn()->getPhpName(),
 			'i18nQueryName'    => $this->builder->getClassNameFromBuilder($this->builder->getNewStubQueryBuilder($i18nTable)),
@@ -84,7 +84,6 @@ class L10nBehaviorObjectBuilderModifier extends I18nBehaviorObjectBuilderModifie
 		$this->behavior->backupTemplatesDirname();
 		$template = $this->behavior->renderTemplate('objectRemoveTranslation', [
 			'objectClassName' => $this->builder->getClassNameFromBuilder($this->builder->getStubObjectBuilder($this->table)),
-			'defaultLocale'    => $this->behavior->getDefaultLocale(),
 			'i18nQueryName'    => $this->builder->getClassNameFromBuilder($this->builder->getNewStubQueryBuilder($i18nTable)),
 			'i18nCollection'   => $this->builder->getRefFKCollVarName($fk),
 			'localeColumnName' => $this->behavior->getLocaleColumn()->getPhpName(),
@@ -103,7 +102,27 @@ class L10nBehaviorObjectBuilderModifier extends I18nBehaviorObjectBuilderModifie
 		return $template;
 	}
 	
-	// TODO: addTranslatedColumnGetter
+	protected function addTranslatedColumnGetter(Column $column) {
+		$objectBuilder = $this->builder->getNewObjectBuilder($this->behavior->getI18nTable());
+		$comment = '';
+		if ($this->isDateType($column->getType())) {
+			$objectBuilder->addTemporalAccessorComment($comment, $column);
+		} else {
+			$objectBuilder->addDefaultAccessorComment($comment, $column);
+		}
+		$comment = preg_replace('/^\t/m', '', $comment);
+
+		$this->behavior->backupTemplatesDirname();
+		$template = $this->behavior->renderTemplate('objectTranslatedColumnGetter', [
+			'comment'           => $comment,
+			'column'			=> $column,
+			'columnPhpName'     => $column->getPhpName(),
+			'localeColumnName'  => $this->behavior->getLocaleColumn()->getPhpName()
+		]);
+		$this->behavior->restoreTemplatesDirname();
+		return $template;
+	}
+	
 	// TODO: addTranslatedColumnSetter
 
 	public function objectClearReferences($builder) {

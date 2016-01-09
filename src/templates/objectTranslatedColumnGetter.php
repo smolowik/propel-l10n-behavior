@@ -1,25 +1,45 @@
 
 <?php echo $comment ?>
-<?php echo $functionStatement ?>
 
-	// when locale dependency exists
-	if ($this->currentLocale !== null) {
-		$locale = $this->currentLocale;
+<?php echo $column->getAccessorVisibility() ?> function get<?php echo $columnPhpName?>($locale = null<?php 
+ if ($column->isLazyLoad()) {
+ 	$script .= ", ConnectionInterface \$con = null";
+ }
+?>)
+{
+	$value = null;
+	if ($locale === null) {
+		$locale = $this->get<?= $localeColumnName ?>();
 	}
 	if ($locale === null) {
 		$locale = PropelL10n::getLocale();
 	}
 	
-	/*if (PropelL10n::hasDependency($locale)) {
-		$count = PropelL10n::countDependencies($locale) - 1;
-		$column = $this->getCurrentTranslation()->get<?php echo $columnPhpName ?>(<?php echo $params ?>);
-		while ($column === null && $count > 0) {
-			$locale = PropelL10n::getDepdendency($locale);
-			$column = $this->getTranslation($locale)->get<?php echo $columnPhpName ?>(<?php echo $params ?>);
-			$count--;
-		}
-	}*/
+	// try default locale
+	$trans = $this->getTranslation($locale);
+	$value = $trans->get<?php echo $columnPhpName ?>(<?php if ($column->isLazyLoad()) echo '$con';?>);
 	
-	// anyway, get default translation
-    return $this->getCurrentTranslation()->get<?php echo $columnPhpName ?>(<?php echo $params ?>);
+	if ($value === null) {
+		// try dependency chain
+		while (PropelL10n::hasDependency($locale) && $value === null) {
+			$locale = PropelL10n::getDependency($locale);
+			$trans = $this->getTranslation($locale);
+			$value = $trans->get<?php echo $columnPhpName ?>(<?php if ($column->isLazyLoad()) echo '$con';?>);
+		}
+		
+		// try primary language
+		if ($value === null) {
+			$locale = \Locale::getPrimaryLanguage($locale);
+			$trans = $this->getTranslation($locale);
+			$value = $trans->get<?php echo $columnPhpName ?>(<?php if ($column->isLazyLoad()) echo '$con';?>);
+			
+			// try fallback language
+			if ($value === null) {
+				$locale = PropelL10n::getFallback();
+				$trans = $this->getTranslation($locale);
+				$value = $trans->get<?php echo $columnPhpName ?>(<?php if ($column->isLazyLoad()) echo '$con';?>);
+			}
+		}
+	}
+    return $value;
 }

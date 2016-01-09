@@ -19,10 +19,11 @@
 	},
 	"require" : {
 		"php" : ">=5.4",
-		"propel/propel" : "dev-master@dev"
+		"propel/propel" : "@dev"
 	},
 	"require-dev" : {
-		"phpunit/phpunit" : "~4"
+		"phpunit/phpunit" : "~4",
+		"propel/propel" : "2.0.0-alpha5@alpha"
 	},
 	"extra" : {
 		"name" : "l10n",
