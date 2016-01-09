@@ -8,13 +8,21 @@
 		"l10n"
 	],
 	"autoload" : {
-		"psr-0" : {
-			"gossi\\propel\\behavior\\l10n" : "src"
+		"psr-4" : {
+			"gossi\\propel\\behavior\\l10n\\" : "src"
+		}
+	},
+	"autoload-dev" : {
+		"psr-4" : {
+			"gossi\\propel\\behavior\\l10n\\tests\\" : "tests"
 		}
 	},
 	"require" : {
 		"php" : ">=5.4",
 		"propel/propel" : "dev-master@dev"
+	},
+	"require-dev" : {
+		"phpunit/phpunit" : "~4"
 	},
 	"extra" : {
 		"name" : "l10n",
