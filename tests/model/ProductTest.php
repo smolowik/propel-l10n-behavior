@@ -7,7 +7,7 @@ class ProductTest extends ModelTestCase {
 	
 	protected function setUp() {
 		$schema = <<<EOF
-<database name="l10n_behavior">
+<database name="l10n_behavior" namespace="test">
 	<table name="product">
 		<column name="id" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" />
 		<column name="title" type="VARCHAR" required="true" />
@@ -33,7 +33,7 @@ EOF;
 	}
 	
 	public function testDefaultLocale() {
-		$p = new \Product();
+		$p = new \test\Product();
 		
 		$this->assertNull($p->getLocale());
 		
@@ -43,7 +43,7 @@ EOF;
 	}
 	
 	public function testDependency() {
-		$p = new \Product();
+		$p = new \test\Product();
 		$p->setLocale('de-DE');
 		$p->setTitle('lecker');
 // 		$p->setLocale('de-CH');
