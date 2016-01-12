@@ -211,7 +211,7 @@ I'm pretty sure this is a performance nightmare. Only propel API methods are use
 
 ## References
 
-There's a lot material about localization, language-tags and finding the right subtags around, yet finding the right one, is sometimes hard. Here are some good references:
+There's a lot material about localization, language-tags. Sometimes it is about finding the right subtag, which can be complicated enough. Here are some good references:
 
 - [Language Tags](http://www.w3.org/International/articles/language-tags/)
 - [Choosing a Language Tag](http://www.w3.org/International/questions/qa-choosing-language-tags)
