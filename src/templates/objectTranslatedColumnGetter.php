@@ -2,9 +2,9 @@
 <?php echo $comment ?>
 
 <?php echo $column->getAccessorVisibility() ?> function get<?php echo $columnPhpName?>($locale = null<?php 
- if ($column->isLazyLoad()) {
- 	$script .= ", ConnectionInterface \$con = null";
- }
+if ($column->isLazyLoad()) {
+ 	echo ", ConnectionInterface \$con = null";
+}
 ?>)
 {
 	$value = null;
