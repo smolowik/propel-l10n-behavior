@@ -13,7 +13,7 @@
  * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
  * @param     string $locale Overwrites the locale for this filter
  *
- * @return    <?php echo $objectClassName ?>[]|ObjectCollection The results
+ * @return    <?php echo $objectClassName ?> The result
  */
 public function findOneBy<?php echo $columnPhpName?>($<?php echo $columnName ?> , $comparison = null, $locale = null)
 {

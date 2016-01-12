@@ -201,6 +201,9 @@ $book = BookQuery::create()
 $book = ...;
 ```
 
+## Best Practices
+
+**Use the shortest locale possible!** Only use a longer language-tag, when it is necessary to be more specific. If there is no need, just go with `de` instead of `de-DE` (which is kind of redundant anyway). However, go with `de` and `de-CH` as there might be content available which is different for people in germany or switzerland (e.g. a contact address, one for germany the other for switzerland).
 
 ## Performance
 
