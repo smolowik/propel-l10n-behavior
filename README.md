@@ -1,6 +1,8 @@
 Propel l10n Behavior
 ====================
 
+[![Build Status](https://travis-ci.org/gossi/propel-l10n-behavior.svg?branch=master)](https://travis-ci.org/gossi/propel-l10n-behavior)
+
 The propel-l10n-behavior is an extension to propels own i18n behavior. Basically, it puts an API in front of the i18n behavior and let's you use propels default API but with localized content. You provide the localization you want to use once (globally) and you are ready to go.
 
 ## Installation
