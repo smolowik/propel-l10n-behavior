@@ -176,7 +176,7 @@ echo $book->getTitle('ja-JP'); // Lord of the Rings - using fallback locale (`en
 You can use your well known methods to query the database:
 
 ```php
-// default language: de
+// default locale: de
 
 // contains all books with a german title starting with 'Harry Potter'
 $books = BookQuery::create()
@@ -191,7 +191,7 @@ $book = ...;
 
 // all harry potter books searched with the japanese title
 $books = BookQuery::create()
-	->setLocale('ja')					// overwrites query default locale
+	->setLocale('ja') 				// overwrites query default locale
 	->findByTitle('Harī Pottā%');
 $books = ...;
 
