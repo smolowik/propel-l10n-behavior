@@ -6,15 +6,15 @@ use Propel\Generator\Behavior\I18n\I18nBehavior;
 class L10nBehavior extends I18nBehavior {
 
 	// default parameters value
-// 	protected $parameters = [
-// 		'i18n_table'        => '%TABLE%_i18n',
-// 		'i18n_phpname'      => '%PHPNAME%I18n',
-// 		'i18n_columns'      => '',
-// 		'i18n_pk_column'    => null,
-// 		'locale_column'     => 'locale',
-// 		'locale_length'     => 5,
-// 		'locale_alias'      => '',
-// 	];
+	protected $parameters = [
+		'i18n_table'        => '%TABLE%_i18n',
+		'i18n_phpname'      => '%PHPNAME%I18n',
+		'i18n_columns'      => '',
+		'i18n_pk_column'    => null,
+		'locale_column'     => 'locale',
+		'locale_length'     => 76,
+		'locale_alias'      => '',
+	];
 	
 	protected $templateDirnameBackup;
 
@@ -31,6 +31,10 @@ class L10nBehavior extends I18nBehavior {
 	
 	public function staticAttributes($builder) {
 		// override parent behavior... but do nothing
+	}
+	
+	public function getDefaultLocale() {
+		return PropelL10n::getLocale();
 	}
 
 	public function getObjectBuilderModifier() {

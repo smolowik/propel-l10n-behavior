@@ -1,48 +1,42 @@
 Propel l10n Behavior
 ====================
 
-This behavior let's you globally define your locales with its dependencies and retrieve the most recent locale for your accessor methods, without further interaction about setting the new locale on a model. It is based on propels own i18n behavior.
+The propel-l10n-behavior is an extension to propels own i18n behavior. Basically, it puts an API in front of the i18n behavior and let's you use propels default API but with localized content. You provide the localization you want to use once (globally) and you are ready to go.
 
 ## Installation
-
-TODO!
 
 Install via composer:
 
 ```json
 {
     "require": {
-        "gossi/propel-l10n-behavior": "dev-master"
+        "gossi/propel-l10n-behavior": "~0"
     }
 }
 ```
 
 ## Locale and Dependencies
+When working with locales, you should know about the locales and dependencies you can define for the propel-l10n-behavior. There are three mechanisms:
 
-Whenever you retrieve a localized field, the behavior will use the following algorithm to find the contents for the field in the most recent locale:
-
-1. Set default locale as locale.
-2. Try to get the field in the set locale
-3. If empty, check if the locale has a dependency and if yes, set dependency as new locale, continue with step 2
-4. If no dependecy is set for that locale, try to use the primary language, e.g. locale: 'de-DE' -> primary language: 'de'. If locale and primary language are unequal, set the primary language as locale, continue with step 2
-4. If primary language is empty, use fallback as new locale and continue with step 2
-5. Last step: giving up, return null
+- Locale (That's the default locale, when retrieving localized content from a propel object)
+- Dependencies (This is a dependency chain, when a field is not available in the default locale)
+- Fallback (If nothing is found, try the fallback locale)
 
 ### Set Default locale
 
 Default locale is set to `en` but of course you can change this:
 
 ```php
-PropelL10n::setLocale('de-DE');
+PropelL10n::setLocale('de');
 
-echo PropelL10n::getLocale(); // de-DE
+echo PropelL10n::getLocale(); // de
 ```
 
 The default locale can be overwritten per object, e.g. you have a `Book` model, this is how it works:
 
 ```php
 $book = new Book();
-$book->setLocale('ja-JP');
+$book->setLocale('ja');
 ```
 
 Now, the locale for book is japanese, while for all others it stays german (as seen in the example above). You can reset this object-related overwrite by setting the locale to `null`:
@@ -51,14 +45,26 @@ Now, the locale for book is japanese, while for all others it stays german (as s
 $book->setLocale(null);
 ```
 
+The object default locale can be overwritten per call, e.g.
+
+```php
+PropelL10n::setLocale('it');
+$book = BookQuery::create() // locale: it
+	->setLocale('ja') // locale: ja
+	->findOneByTitle('Herr der Ringe', null, 'de') // locale: de
+;
+$book->setLocale('ja');
+$book->setTitle('Lord of the Rings', 'en');
+```
+
 ### Set Fallback locale
 
 Fallback locale also is defaulted to `en`, yet you can change that:
 
 ```php
-PropelL10n::setFallback('de-DE');
+PropelL10n::setFallback('de');
 
-echo PropelL10n::getFallback(); // de-DE
+echo PropelL10n::getFallback(); // de
 ```
 
 ### Working with Dependencies
@@ -67,26 +73,43 @@ There is some API to work with dependencies:
 
 ```php
 // get and set one dependency
-PropelL10n::addDependency('de-CH', 'de-DE');
-echo PropelL10n::getDependency('de-CH'); // de-DE
+PropelL10n::addDependency('de-CH', 'de');
+echo PropelL10n::getDependency('de-CH'); // de
 
 // get and set all dependencies
 PropelL10n::setDependencies([
-	'de-CH' => 'de-DE',
-	'de-AT' => 'de-DE',
-	'de-DE' => 'en-US',
-	'en-US' => 'en'
+	'de'	=> 'en',
+	'de-CH' => 'de',
+	'de-AT' => 'de'
 ]);
 print_r(PropelL10n::getDependencies()); // outputs the array from above
 
 // check if dependencies exist
-PropelL10n::hasDependency('de-DE'); // true
-PropelL10n::hasDepdedency('ja-JP'); // false
+PropelL10n::hasDependency('de'); // true
+PropelL10n::hasDepdedency('ja'); // false
 
 // count depdencies for a given locale
-PropelL10n::setDependencies(['de-DE' => 'en-US', 'de-CH' => 'de-DE']);
+PropelL10n::setDependencies(['de' => 'en', 'de-CH' => 'de']);
 PropelL10n::countDependencies('de-CH'); // 2
 ```
+
+### Retrieving a localized Field
+
+Whenever you retrieve a localized field, the behavior will use the following algorithm to find the contents for the field in the most recent locale:
+
+1. Set default locale as locale.
+2. Try to get the field in the set locale
+3. If empty, check if the locale has a dependency and if yes
+	a. if the primary language of the dependency and the current locale are different, work down the language-tag-chain of the current locale
+	b. set dependency as new locale, continue with step 2
+4. If no dependecy is set for that locale, work down the language-tag-chain
+4. If primary language is empty, use fallback as new locale and continue with step 2
+5. Last step: giving up, return null
+
+Language-tag-chain:
+
+Given the following language-tag: `de-DE-1996` it consists of three subtags. When working down the language-tag-chain it means, the last subtag is dropped and it will be tried to getting the content of a field for the remaining language-tag until there is only the primary language left.
+
 
 ## Usage
 
@@ -120,14 +143,13 @@ There is three things you need to do once for your app and you are ready to go a
 Example:
 
 ```php
-PropelL10n::setLocale('de-CH'); // this is mostly the language a user decided to use
+PropelL10n::setLocale('de'); // this is mostly the language a user decided to use
 PropelL10n::setFallback('en'); // that's the default language of your app
 PropelL10n::setDependencies([ // that's the locales you have available
-	'de-CH' => 'de-DE',
-	'de-AT' => 'de-DE',
-	'de-DE' => 'en-US',
-	'ja-JP' => 'en-US',
-	'en-US' => 'en'
+	'de'	=> 'en'
+	'de-CH' => 'de',
+	'de-AT' => 'de',
+	'ja' => 'en'
 ]);
 ```
 
@@ -149,9 +171,56 @@ echo $book->getTitle(); // Herr der Ringe
 echo $book->getTitle('ja-JP'); // Lord of the Rings - using fallback locale (`en`)
 ```
 
+#### Querying the Database
+
+You can use your well known methods to query the database:
+
+```php
+// default language: de
+
+// contains all books with a german title starting with 'Harry Potter'
+$books = BookQuery::create()
+	->filterByTitle('Harry Potter%')
+	->find();
+$books = ...; 
+
+// the book lord of the rings as searched with an english title name
+$book = BookQuery::create()
+	->findOneByTitle('Lord of the Rings', null, 'en');
+$book = ...; 
+
+// all harry potter books searched with the japanese title
+$books = BookQuery::create()
+	->setLocale('ja')					// overwrites query default locale
+	->findByTitle('Harī Pottā%');
+$books = ...;
+
+// find lord of the rings with the japanese title, overwrite locale with the filter method
+$book = BookQuery::create()
+	->findOneByTitle('Yubiwa Monogatari', null, 'ja');
+$book = ...;
+```
+
 
 ## Performance
 
-I'm pretty sure this is a performance nightmare. Only propel API methods are used, so no manual queries so far. Performance optimization can begin after propel will merge the `data-mapper` branch into `master`. Suggestions are welcome, please post the to the issue tracker.
+I'm pretty sure this is a performance nightmare. Only propel API methods are used, means no manual queries so far. Performance optimization can begin after propel will merge the `data-mapper` branch into `master`. Suggestions are welcome, please post the to the issue tracker.
+
+## References
+
+There's a lot material about localization, language-tags and finding the right subtags around, yet finding the right one, is sometimes hard. Here are some good references:
+
+- [Language Tags](http://www.w3.org/International/articles/language-tags/)
+- [Choosing a Language Tag](http://www.w3.org/International/questions/qa-choosing-language-tags)
+- [IANA Language Subtag Registry](https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry)
+- [Language subtag lookup tool](https://r12a.github.io/apps/subtags/)
+
+Related Specifications:
+
+- [RCP 5646 - Tags for Identifying Languages](https://tools.ietf.org/html/rfc5646)
+- [BCP 47 - Tags for Identifying Languages](https://www.rfc-editor.org/bcp/bcp47.txt)
+
+
+
 
 

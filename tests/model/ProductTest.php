@@ -85,4 +85,13 @@ EOF;
 		$this->assertEquals('delicious', $p->getTitle('en-US'));
 		$this->assertEquals('bene', $p->getTitle('it-IT'));
 	}
+	
+	public function testLocaleTagChain() {
+		PropelL10n::addDependency('it-IT', 'en');
+		$p = new \Product();
+		$p->setTitle('bene', 'it');
+		$p->setTitle('good', 'en');
+		
+		$this->assertEquals('bene', $p->getTitle('it-IT'));
+	}
 }
