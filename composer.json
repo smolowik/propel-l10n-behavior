@@ -9,12 +9,12 @@
 	],
 	"autoload" : {
 		"psr-4" : {
-			"smolowik\\Propel\\Behavior\\l10n\\" : "src"
+			"gossi\\propel\\behavior\\l10n\\" : "src"
 		}
 	},
 	"autoload-dev" : {
 		"psr-4" : {
-			"smolowik\\Propel\\Behavior\\l10n\\tests\\" : "tests"
+			"gossi\\propel\\behavior\\l10n\\tests\\" : "tests"
 		}
 	},
 	"require" : {
@@ -28,6 +28,6 @@
 	},
 	"extra" : {
 		"name" : "l10n",
-		"class" : "\\smolowik\\Propel\\Behavior\\l10n\\L10nBehavior"
+		"class" : "\\gossi\\propel\\behavior\\l10n\\L10nBehavior"
 	}
 }
