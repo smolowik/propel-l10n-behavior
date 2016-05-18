@@ -6,5 +6,11 @@
  */
 public function get<?= $localeColumnName ?>()
 {
-    return $this->currentLocale;
+    $locale = $this->currentLocale;
+    
+    if ($locale === null) {
+        $locale = PropelL10n::getLocale();
+    }
+    
+    return $locale;
 }
