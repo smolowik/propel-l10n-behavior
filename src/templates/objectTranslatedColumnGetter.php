@@ -9,5 +9,5 @@ if ($column->isLazyLoad()) {
 ?>)
 {
 
-    return $this->getCurrentTranslation()->get<?php echo $columnPhpName ?>(<?php echo $params ?>);
+    return $this->getCurrentTranslation()->get<?php echo $columnPhpName ?>(<?php if ($column->isLazyLoad()) echo '$con';?>);
 }
