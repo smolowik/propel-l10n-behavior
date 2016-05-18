@@ -1,5 +1,5 @@
 {
-	"name" : "gossi/propel-l10n-behavior",
+	"name" : "smolowik/propel-l10n-behavior",
 	"type" : "propel-behavior",
 	"license" : "MIT",
 	"keywords" : [
@@ -9,12 +9,12 @@
 	],
 	"autoload" : {
 		"psr-4" : {
-			"gossi\\propel\\behavior\\l10n\\" : "src"
+			"smolowik\\Propel\\Behavior\\l10n\\" : "src"
 		}
 	},
 	"autoload-dev" : {
 		"psr-4" : {
-			"gossi\\propel\\behavior\\l10n\\tests\\" : "tests"
+			"smolowik\\Propel\\Behavior\\l10n\\tests\\" : "tests"
 		}
 	},
 	"require" : {
@@ -28,6 +28,6 @@
 	},
 	"extra" : {
 		"name" : "l10n",
-		"class" : "\\gossi\\propel\\behavior\\l10n\\L10nBehavior"
+		"class" : "\\smolowik\\Propel\\Behavior\\l10n\\L10nBehavior"
 	}
 }
